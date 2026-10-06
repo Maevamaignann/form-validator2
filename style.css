@@ -81,7 +81,8 @@ h2 {
   visibility: visible;
 }
 
-.form button {
+.form button,
+.button-link {
   cursor: pointer;
   background-color: #3498db;
   border: 2px solid #3498db;
@@ -92,4 +93,15 @@ h2 {
   padding: 10px;
   margin-top: 20px;
   width: 100%;
+  text-align: center;
+  text-decoration: none;
+}
+
+.confirmation {
+  padding: 30px 40px;
+}
+
+.confirmation p {
+  margin: 0;
+  color: #777;
 }

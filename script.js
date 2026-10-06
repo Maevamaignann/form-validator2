@@ -23,8 +23,10 @@ function checkEmail(input) {
   const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   if (re.test(input.value.trim())) {
     showSuccess(input);
+    return true;
   } else {
     showError(input, 'Email is not valid');
+    return false;
   }
 }
 
@@ -50,13 +52,16 @@ function checkLength(input, min, max) {
       input,
       `${getFieldName(input)} must be at least ${min} characters`
     );
+    return false;
   } else if (input.value.length > max) {
     showError(
       input,
       `${getFieldName(input)} must be less than ${max} characters`
     );
+    return false;
   } else {
     showSuccess(input);
+    return true;
   }
 }
 
@@ -64,7 +69,10 @@ function checkLength(input, min, max) {
 function checkPasswordsMatch(input1, input2) {
   if (input1.value !== input2.value) {
     showError(input2, 'Passwords do not match');
+    return false;
   }
+
+  return true;
 }
 
 // Get fieldname
@@ -76,11 +84,21 @@ function getFieldName(input) {
 form.addEventListener('submit', function(e) {
   e.preventDefault();
 
-  if(checkRequired([username, email, password, password2])){
-    checkLength(username, 3, 15);
-    checkLength(password, 6, 25);
-    checkEmail(email);
-    checkPasswordsMatch(password, password2);
+  const hasRequiredError = checkRequired([username, email, password, password2]);
+  let isUsernameValid = false;
+  let isPasswordValid = false;
+  let isEmailValid = false;
+  let isPasswordMatch = false;
+
+  if (!hasRequiredError) {
+    isUsernameValid = checkLength(username, 3, 15);
+    isPasswordValid = checkLength(password, 6, 25);
+    isEmailValid = checkEmail(email);
+    isPasswordMatch = checkPasswordsMatch(password, password2);
   }
 
+  if (!hasRequiredError && isUsernameValid && isPasswordValid && isEmailValid && isPasswordMatch) {
+    const usernameValue = encodeURIComponent(username.value.trim());
+    window.location.href = `merci.html?username=${usernameValue}`;
+  }
 });
